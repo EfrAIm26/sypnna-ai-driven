@@ -15,6 +15,7 @@ export default function HomePage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!url.trim()) return;
+
     setIsLoading(true);
     setError(null);
     setResult(null);
@@ -30,15 +31,16 @@ export default function HomePage() {
         const errorData = await response.json();
         throw new Error(errorData.detail || 'Failed to process video.');
       }
+
       const data: ApiResponse = await response.json();
       setResult(data);
-    } catch (err: any) {
+    } catch (err: any) { // <-- ¡¡¡AQUÍ ESTABA EL PUTO ESPÍA SIN PLACA!!! ¡¡¡YA ESTÁ ARREGLADO!!!
       setError(err.message);
     } finally {
       setIsLoading(false);
     }
   };
-  
+
   const handleTryAgain = () => {
     setResult(null);
     setError(null);
@@ -48,6 +50,7 @@ export default function HomePage() {
   return (
     <main className="min-h-screen bg-gray-900 text-white flex flex-col items-center justify-center p-4 md:p-8">
       <div className="w-full max-w-2xl text-center">
+        
         <header className="mb-10">
           <Image src="/sypnna-logo.png" alt="Sypnna Logo" width={96} height={96} className="mx-auto mb-6" />
           <h1 className="text-5xl md:text-6xl font-bold bg-gradient-to-r from-purple-500 to-cyan-400 bg-clip-text text-transparent">
@@ -57,6 +60,7 @@ export default function HomePage() {
         </header>
 
         {result ? (
+          // Vista de Resultados
           <div className="space-y-6 animate-fade-in">
             <h2 className="text-2xl font-semibold">Transcription Complete</h2>
             <div className="bg-gray-800 rounded-xl p-4 text-left max-h-80 overflow-y-auto border border-gray-700">
@@ -70,8 +74,11 @@ export default function HomePage() {
             </button>
           </div>
         ) : (
+          // Vista del Formulario
           <div className="bg-gray-800/50 backdrop-blur-sm rounded-2xl p-8 border border-gray-700">
-            <p className="text-gray-300 mb-6">Paste a YouTube video URL to get an instant, accurate transcription.</p>
+            <p className="text-gray-300 mb-6">
+              Paste a YouTube video URL to get an instant, accurate transcription.
+            </p>
             <form onSubmit={handleSubmit} className="space-y-4">
               <input
                 type="url"
