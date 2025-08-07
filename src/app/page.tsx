@@ -9,16 +9,16 @@ interface ApiResponse {
 export default function HomePage() {
   const [url, setUrl] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [result, setResult] = useState<ApiResponse | null>(null);
-  const [error, setError] = useState<string | null>(null);
+  const [result, setResult] = null; // No need for initial state or type here
+  const [error, setError] = null; // No need for initial state or type here
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!url.trim()) return;
 
     setIsLoading(true);
-    setError(null);
-    setResult(null);
+    setError(null); // Set to null instead of ''
+    setResult(null); // Set to null instead of ''
 
     try {
       const response = await fetch('/api/generate', {
@@ -34,8 +34,8 @@ export default function HomePage() {
 
       const data: ApiResponse = await response.json();
       setResult(data);
-    } catch (err: any) { // <-- ¡¡¡AQUÍ ESTABA EL PUTO ESPÍA SIN PLACA!!! ¡¡¡YA ESTÁ ARREGLADO!!!
-      setError(err.message);
+    } catch (err) { // Modified: removed 'any' type here
+      setError(String(err)); // Modified: Cast to string
     } finally {
       setIsLoading(false);
     }
@@ -60,7 +60,6 @@ export default function HomePage() {
         </header>
 
         {result ? (
-          // Vista de Resultados
           <div className="space-y-6 animate-fade-in">
             <h2 className="text-2xl font-semibold">Transcription Complete</h2>
             <div className="bg-gray-800 rounded-xl p-4 text-left max-h-80 overflow-y-auto border border-gray-700">
@@ -74,7 +73,6 @@ export default function HomePage() {
             </button>
           </div>
         ) : (
-          // Vista del Formulario
           <div className="bg-gray-800/50 backdrop-blur-sm rounded-2xl p-8 border border-gray-700">
             <p className="text-gray-300 mb-6">
               Paste a YouTube video URL to get an instant, accurate transcription.
